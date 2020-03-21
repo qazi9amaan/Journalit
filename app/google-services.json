@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "915087881269",
+    "firebase_url": "https://journal-it-fb20d.firebaseio.com",
+    "project_id": "journal-it-fb20d",
+    "storage_bucket": "journal-it-fb20d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:915087881269:android:094dc53472077f472bad7c",
+        "android_client_info": {
+          "package_name": "com.example.login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "915087881269-9060kj2jorml71nga83i1qgfk6v7s9t2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.login",
+            "certificate_hash": "ef98e99cfec19d5f04055949b09322266b6b7e07"
+          }
+        },
+        {
+          "client_id": "915087881269-papu36abedi9su98j9uvd67dq6n09dvd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATbiny3IIuENrwHsqgT15n1-IgXOtihNI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "915087881269-papu36abedi9su98j9uvd67dq6n09dvd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
