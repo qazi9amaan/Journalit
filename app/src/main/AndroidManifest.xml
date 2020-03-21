@@ -16,7 +16,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".ShowNoteActivity"
@@ -24,12 +23,10 @@
         <activity
             android:name=".ThirdActivity"
             android:parentActivityName=".SecondActivity" />
-        <activity android:name=".SecondActivity"></activity>
+        <activity android:name=".SecondActivity" />
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="fullSensor">
-
-        </activity>
+            android:name=".LoginActivity"
+            android:screenOrientation="fullSensor"></activity>
     </application>
 
 </manifest>

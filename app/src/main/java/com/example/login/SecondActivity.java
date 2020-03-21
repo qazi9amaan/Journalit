@@ -6,10 +6,11 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,6 +18,8 @@ import com.example.login.Adapters.NoteListAdapter;
 import com.example.login.Helper.DatabaseHelper;
 import com.example.login.Model.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
@@ -25,6 +28,8 @@ public class SecondActivity extends AppCompatActivity {
     FloatingActionButton addNote;
     DatabaseHelper myDB;
     private ListView listView;
+
+    private FirebaseAuth mAuth;
 
 
     
@@ -40,6 +45,7 @@ public class SecondActivity extends AppCompatActivity {
         addNote=findViewById(R.id.addnote);
         myDB = new DatabaseHelper(this);
         listView = findViewById(R.id.listView);
+        mAuth = FirebaseAuth.getInstance();
         
         addNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +58,17 @@ public class SecondActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if( currentUser == null){
+            Intent signinintent = new Intent(SecondActivity.this, LoginActivity.class);
+            finish();
+        }
+
+    }
     private void populateList() {
 
         ArrayList<Note> noteList = new ArrayList<>();
@@ -90,5 +107,30 @@ public class SecondActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mainpagetoolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.logout_btn:
+                FirebaseAuth.getInstance().signOut();
+                Intent intent=new Intent(SecondActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
 }
