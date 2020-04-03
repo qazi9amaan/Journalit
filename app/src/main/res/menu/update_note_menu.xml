@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/edit_title"
+        android:icon="@drawable/action_edit_title"
+        android:title="Edit"
+
+        app:showAsAction="always" />
+    <item
         android:id="@+id/delete_note"
         android:icon="@drawable/ic_action_delete"
         android:title="Delete"

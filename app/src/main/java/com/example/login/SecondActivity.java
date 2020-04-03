@@ -1,7 +1,10 @@
 package com.example.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,19 +23,33 @@ import com.example.login.Model.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
-public class SecondActivity extends AppCompatActivity {
+public class SecondActivity extends AppCompatActivity   {
     FloatingActionButton addNote;
-    DatabaseHelper myDB;
-    private ListView listView;
 
-    private FirebaseAuth mAuth;
+     RecyclerView recyclerview;
+
+    FirebaseDatabase mdatabase ;
+    DatabaseReference myRef;
+    FirebaseAuth mAuth;
+    String CurrentUserID;
+    ArrayList<Note> noteList ;
+    NoteListAdapter adapter;
 
 
-    
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,18 +60,67 @@ public class SecondActivity extends AppCompatActivity {
         
         // Initiliaztions
         addNote=findViewById(R.id.addnote);
-        myDB = new DatabaseHelper(this);
-        listView = findViewById(R.id.listView);
+        recyclerview = findViewById(R.id.listView);
+
         mAuth = FirebaseAuth.getInstance();
-        
+        CurrentUserID = mAuth.getUid();
+        mdatabase = FirebaseDatabase.getInstance();
+        myRef= mdatabase.getReference().child("users").child(CurrentUserID);
+
+         noteList = new ArrayList<Note>();
+
+
         addNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 newNote();
             }
         });
+        recyclerview.setLayoutManager(new LinearLayoutManager(this));
+
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren())
+                    {
+                        Note note = dataSnapshot1.getValue(Note.class);
+                        noteList.add(note);
+
+                    }
+                    adapter = new NoteListAdapter(SecondActivity.this,noteList );
+                    recyclerview.setAdapter(adapter);
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+//
+
+
+
         
-        populateList();
+
+        
+
+
+//        recyclerview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//
+//            }
+//        });
+
+
+
     }
 
 
@@ -69,35 +135,7 @@ public class SecondActivity extends AppCompatActivity {
         }
 
     }
-    private void populateList() {
 
-        ArrayList<Note> noteList = new ArrayList<>();
-        Cursor data = myDB.getListContents();
-        if(data.getCount() == 0){
-            Toast.makeText(this, "No notes!",Toast.LENGTH_LONG).show();
-        }else{
-            while(data.moveToNext()){
-                Note note = new Note(data.getString(1),data.getString(2));
-                noteList.add(note);
-
-                // Need to create personalised adapter
-                NoteListAdapter adapter = new NoteListAdapter(this,R.layout.list_view_items,noteList);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Note selectednote = (Note)parent.getItemAtPosition(position);
-                        Intent intent=new Intent(SecondActivity.this,ShowNoteActivity.class);
-                        intent.putExtra("note_title",selectednote.getTitle());
-                        intent.putExtra("note_desc",selectednote.getDesc());
-                        startActivity(intent);
-                        }
-                });
-
-
-                listView.setAdapter(adapter);
-            }
-        }
-    }
 
 
 
@@ -133,4 +171,13 @@ public class SecondActivity extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    public void OnNoteClick(int position) {
+//                        Note selectednote = noteList.get(position);
+//
+//        Intent intent=new Intent(SecondActivity.this,ShowNoteActivity.class);
+//                intent.putExtra("note_title",selectednote.getTitle());
+//                intent.putExtra("note_desc",selectednote.getDesc());
+//                startActivity(intent);
+//    }
 }

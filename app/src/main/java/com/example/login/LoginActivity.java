@@ -71,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (btntype == 0) {
                     mainProgressbar.setVisibility(View.VISIBLE);
                     phonenumber.setEnabled(false);
-                    siginin.setEnabled(false);
+                    siginin.setVisibility(View.INVISIBLE);
                     msg.setText("Please wait while we provide you with the verification code...");
                     String phnno = "+91"+ phonenumber.getText().toString();
 
@@ -86,7 +86,8 @@ public class LoginActivity extends AppCompatActivity {
                 }else{
                     mainProgressbar.setVisibility(View.VISIBLE);
                     auth.setEnabled(false);
-                    siginin.setEnabled(false);
+                    siginin.setVisibility(View.INVISIBLE);
+
 
                     String verificationcode = auth.getText().toString();
                     PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationcode);
@@ -125,11 +126,13 @@ public class LoginActivity extends AppCompatActivity {
 
                 btntype = 1;
                 mainProgressbar.setVisibility(View.INVISIBLE);
+
                 phonenumber.setVisibility(View.INVISIBLE);
                 auth.setVisibility(View.VISIBLE);
                 msg.setText("Please enter the verification code sent to your device...");
                 siginin.setText("Verify");
                 siginin.setEnabled(true);
+                siginin.setVisibility(View.VISIBLE);
 
 
 
@@ -163,6 +166,11 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                                 msg.setText(task.getException().getMessage());
+                                mainProgressbar.setVisibility(View.INVISIBLE);
+
+                                siginin.setEnabled(true);
+                                siginin.setVisibility(View.VISIBLE);
+
                             }
                         }
                     }

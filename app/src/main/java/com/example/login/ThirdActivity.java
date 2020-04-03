@@ -14,11 +14,19 @@ import android.widget.Toast;
 
 
 import com.example.login.Helper.DatabaseHelper;
+import com.example.login.Model.Note;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ThirdActivity extends AppCompatActivity {
 
@@ -26,6 +34,16 @@ public class ThirdActivity extends AppCompatActivity {
     private EditText note_desc;
     private FloatingActionButton save_btn;
     DatabaseHelper myDB;
+
+
+
+    FirebaseDatabase mdatabase ;
+    DatabaseReference myRef;
+    FirebaseAuth mAuth;
+    String CurrentUserID;
+    Date date;
+
+
 
 
 
@@ -46,7 +64,15 @@ public class ThirdActivity extends AppCompatActivity {
         save_btn = findViewById(R.id.input_save_note_btn);
         myDB = new DatabaseHelper(this);
 
-        
+
+        mdatabase = FirebaseDatabase.getInstance();
+        myRef= mdatabase.getReference("users");
+        mAuth = FirebaseAuth.getInstance();
+        CurrentUserID = mAuth.getUid();
+
+        date = new Date(System.currentTimeMillis());
+
+
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,16 +92,21 @@ public class ThirdActivity extends AppCompatActivity {
     }
 
     private void AddData(String title,String desc) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy hh:mm aa", Locale.ENGLISH);
+        String c_date = dateFormat.format(date);
 
-        boolean insertData = myDB.addData(title,desc);
+        String key = myRef.child(CurrentUserID).push().getKey();
 
-        if(insertData==true){
-            toastMessage("Data Successfully Inserted!");
-        }else{
-            toastMessage("Something went wrong");
+//        Note note = new Note(title,desc,c_date);
+        HashMap<Object,String> hashMap = new HashMap<>();
+        hashMap.put("key",key);
+        hashMap.put("title",title);
+        hashMap.put("desc",desc);
+        hashMap.put("date",c_date);
+
+
+        myRef.child(CurrentUserID).child(key).setValue(hashMap);
         }
-
-    }
 
     private void gotoMain() {
         Intent intent=new Intent(ThirdActivity.this,SecondActivity.class);
